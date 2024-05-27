@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SortableContainer, SortableElement } from 'react-sortable-hoc';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './App.css';
 
 const App = () => {
@@ -8,41 +8,18 @@ const App = () => {
     { id: 'item-2', label1: 'Ustun nomi', label2: 'Key', placeholder1: 'Ustun nomi', placeholder2: 'Key' },
   ]);
 
-  const SortableItem = SortableElement(({ value }) => (
-    <div className="draggable-item">
-      <div className="input-group">
-        <label>{value.label1}</label>
-        <input type="text" placeholder={value.placeholder1} value={value.content1}/>
-      </div>
-      <div className="input-group">
-        <label>{value.label2}</label>
-        <input type="text" placeholder={value.placeholder2} value={value.content2} />
-      </div>
-    </div>
-  ));
+  const onDragEnd = (result) => {
+    const { source, destination } = result;
 
-  const SortableList = SortableContainer(({ items }) => {
-    return (
-      <div className="droppable-container">
-        <h2>Loyiha ketma-ketligi</h2>
-        {items.map((item, index) => (
-          <SortableItem key={`item-${item.id}`} index={index} value={item} />
-        ))}
-        <div className="btn-wrapper">
-          <button onClick={addNewItem}>Ustun qo'shish</button>
-          <button onClick={handleSave}>Saqlash</button>
-        </div>
-      </div>
-    );
-  });
+    if (!destination) {
+      return;
+    }
 
-  const onSortEnd = ({ oldIndex, newIndex }) => {
-    setItems(prevItems => {
-      const newItems = [...prevItems];
-      const [movedItem] = newItems.splice(oldIndex, 1);
-      newItems.splice(newIndex, 0, movedItem);
-      return newItems;
-    });
+    const reorderedItems = Array.from(items);
+    const [removed] = reorderedItems.splice(source.index, 1);
+    reorderedItems.splice(destination.index, 0, removed);
+
+    setItems(reorderedItems);
   };
 
   const addNewItem = () => {
@@ -56,13 +33,52 @@ const App = () => {
 
   const handleSave = () => {
     items.forEach(item => {
-      console.log(item.value);
+      console.log(item);
     });
   };
 
   return (
     <div className="App">
-      <SortableList items={items} onSortEnd={onSortEnd} axis="y" />
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(provided) => (
+            <div
+              className="droppable-container"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              <h2>Loyiha ketma-ketligi</h2>
+              {items.map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      className="draggable-item"
+                      style={{ ...provided.draggableProps.style, opacity: snapshot.isDragging ? 0.5 : 1 }}
+                    >
+                      <div className="input-group">
+                        <label>{item.label1}</label>
+                        <input type="text" placeholder={item.placeholder1} defaultValue={item.content1} />
+                      </div>
+                      <div className="input-group">
+                        <label>{item.label2}</label>
+                        <input type="text" placeholder={item.placeholder2} defaultValue={item.content2} />
+                      </div>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+              <div className="btn-wrapper">
+                <button onClick={addNewItem}>Ustun qo'shish</button>
+                <button onClick={handleSave}>Saqlash</button>
+              </div>
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 };
