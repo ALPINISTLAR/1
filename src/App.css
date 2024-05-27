@@ -1,42 +1,83 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.droppable-container{
+  padding: 24px;
+  border-radius: 15px;
+  background-color: #F8F8F8;
+  border: 1px solid #E2E2EA;
+  width: 1200px;
+}
+.droppable-container h2{
+  margin-bottom: 24px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 36px;
+}
+.btn-wrapper{
+  display: flex;
+  justify-content: space-between;
+}
+.btn-wrapper button:first-child{
+background: url(/add-square.svg);
+background-repeat: no-repeat;
+background-size: 16px 16px;
+background-position: 0 center;
+padding-left: 24px;
+color: #0062FF;
+font-size: 14px;
+font-weight: 500;
+line-height: 20px;
+border: 0;
+background-color: transparent;
+cursor: pointer;
+}
+.btn-wrapper button{
+  color: #0062FF;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+.draggable-item {
+  position: relative;
   text-align: center;
+  gap: 16px;
+  display: flex;
+  margin-left: 40px;
+  margin-bottom: 24px;
 }
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.draggable-item::before{
+  position: absolute;
+  display: flex;
+  content: "";
+  background: url(/menu.svg);
+  width: 24px;
+  height: 24px;
+  cursor: grab;
+  top: calc(50% - 12px);
+  left: -40px;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.input-group{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.input-group label{
+  font-weight: 600;
 }
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.input-group input{
+  padding: 14px 16px;
+  background-color: #fff;
+  border-radius: 5px;
+  margin-top: 12px;
+  width: 100%;
+  border: 1px solid #EBEAED;
 }
